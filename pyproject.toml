@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "udacity-data-warehouse-s3-redshift"
+version = "0.1.0"
+description = ""
+authors = ["Lui Pillmann <lui.pillmann@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+boto3 = "^1.17.83"
+psycopg2-binary = "^2.8.6"
+
+[tool.poetry.dev-dependencies]
+black = "^21.5b1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
