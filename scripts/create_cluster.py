@@ -16,8 +16,8 @@ def create_iam_resourceole(config):
         "iam", aws_access_key_id=AWS_KEY, aws_secret_access_key=AWS_SECRET
     )
 
+    print("1.1 Creating a new IAM Role")
     try:
-        print("1.1 Creating a new IAM Role")
         dwh_role = iam.create_role(
             Path="/",
             RoleName=config["CLUSTER"]["IAM_ROLE_NAME"],
