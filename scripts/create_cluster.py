@@ -20,7 +20,7 @@ def create_iam_resourceole(config):
     try:
         dwh_role = iam.create_role(
             Path="/",
-            RoleName=config["CLUSTER"]["IAM_ROLE_NAME"],
+            RoleName=config["CLUSTER_HW"]["IAM_ROLE_NAME"],
             Description="Allows Redshift clusters to call AWS services on your behalf.",
             AssumeRolePolicyDocument=json.dumps(
                 {
@@ -38,16 +38,17 @@ def create_iam_resourceole(config):
 
     except iam.exceptions.EntityAlreadyExistsException as e:
         print("Role already exists. Getting info from IAM")
-        dwh_role = iam.get_role(RoleName=config["CLUSTER"]["IAM_ROLE_NAME"])
+        dwh_role = iam.get_role(RoleName=config["CLUSTER_HW"]["IAM_ROLE_NAME"])
 
     print("1.2 Attaching Policy")
     iam.attach_role_policy(
-        RoleName=config["CLUSTER"]["IAM_ROLE_NAME"],
+        RoleName=config["CLUSTER_HW"]["IAM_ROLE_NAME"],
         PolicyArn="arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
     )["ResponseMetadata"]["HTTPStatusCode"]
 
     print("1.3 Get the IAM role ARN")
     role_arn = dwh_role["Role"]["Arn"]
+    print("Done.", role_arn)
 
     return role_arn
 
@@ -66,20 +67,20 @@ def create_cluster(config, role_arn):
         aws_secret_access_key=AWS_SECRET,
     )
 
-    cluster_config = config["CLUSTER"]
+    cluster_config = config["CLUSTER_HW"]
 
     print("2.1 Creating cluster")
     try:
         redshift.create_cluster(
             # parameters for hardware
-            ClusterType=cluster_config["CLUSTER_TYPE"],
-            NodeType=cluster_config["NODE_TYPE"],
-            NumberOfNodes=int(cluster_config["NUM_NODES"]),
+            ClusterType=config["CLUSTER_HW"]["CLUSTER_TYPE"],
+            NodeType=config["CLUSTER_HW"]["NODE_TYPE"],
+            NumberOfNodes=int(config["CLUSTER_HW"]["NUM_NODES"]),
             # parameters for identifiers & credentials
-            DBName=cluster_config["DB_NAME"],
-            ClusterIdentifier=cluster_config["CLUSTER_IDENTIFIER"],
-            MasterUsername=cluster_config["DB_USER"],
-            MasterUserPassword=cluster_config["DB_PASSWORD"],
+            ClusterIdentifier=config["CLUSTER_HW"]["CLUSTER_IDENTIFIER"],
+            DBName=config["CLUSTER"]["DB_NAME"],
+            MasterUsername=config["CLUSTER"]["DB_USER"],
+            MasterUserPassword=config["CLUSTER"]["DB_PASSWORD"],
             # parameter for role (to allow s3 access)
             IamRoles=[role_arn],
         )

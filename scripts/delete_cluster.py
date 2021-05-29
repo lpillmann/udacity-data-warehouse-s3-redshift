@@ -17,7 +17,7 @@ def delete_cluster(config):
         aws_secret_access_key=AWS_SECRET,
     )
 
-    cluster_config = config["CLUSTER"]
+    cluster_config = config["CLUSTER_HW"]
 
     print("Deleting cluster")
     try:
