@@ -4,6 +4,7 @@ from sql_queries import quality_check_definitions
 
 
 def perform_quality_checks(cur, conn):
+    """Iterate over quality check definitions and log results"""
     errors = []
     for quality_checks in quality_check_definitions:
         for name, query in quality_checks.items():
