@@ -21,7 +21,7 @@ What is in this repository:
 ```
 
 ## Getting Started
-This repository contains the code for the third project in Udacity's Data Engineering Nanodegree program.
+Clone this repository and follow steps below within the project directory.
 ### Prerequisites
 
 - [Poetry](https://python-poetry.org/docs/)
