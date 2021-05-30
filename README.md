@@ -1,6 +1,6 @@
 # Data Warehouse with Redshift and S3
 
-Udacity Data Engineering Nano Degree - Project #3: ETL using Redshift and S3
+This repository contains the code for the third project in Udacity's Data Engineering Nanodegree program.
 
 ## Overview
 The project consists of loading data from S3 to Redshift and modeling it in a star schema. Data is first loaded into staging tables and then transformed into a fact table for **songplays** and several dimensions (**songs**, **artists**, **users** and **time**). 
