@@ -178,6 +178,16 @@ songplay_table_insert = """
         (
             select * from staging_songs
         ),
+
+        only_next_song_events as
+        (
+            select
+                *
+            from
+                events
+            where
+                page = 'NextSong'
+        ),
         
         events_with_converted_timestamp as
         (
@@ -185,7 +195,7 @@ songplay_table_insert = """
                 *,
                 timestamp 'epoch' + ts * interval '1 second' / 1000 as start_time
             from
-                events
+                only_next_song_events
         ),
 
         joined as
@@ -301,6 +311,148 @@ time_table_insert = """
     )
 """
 
+# DATA QUALITY CHECKS
+staging_events_table_quality_checks = {
+    "id uniqueness": """
+        select
+            songplay_id,
+            count(*)
+        from
+            songplays
+        group by 1
+        having count(*) > 1
+    """,
+    "id not null": """
+        select
+            songplay_id
+        from
+            songplays
+        where
+            songplay_id is null
+    """,
+}
+
+songplay_table_quality_checks = {
+    "id uniqueness": """
+        select
+            songplay_id,
+            count(*)
+        from
+            songplays
+        group by 1
+        having count(*) > 1
+    """,
+    "id not null": """
+        select
+            songplay_id
+        from
+            songplays
+        where
+            songplay_id is null
+    """,
+}
+
+songplay_table_quality_checks = {
+    "id uniqueness": """
+        select
+            songplay_id,
+            count(*)
+        from
+            songplays
+        group by 1
+        having count(*) > 1
+    """,
+    "id not null": """
+        select
+            songplay_id
+        from
+            songplays
+        where
+            songplay_id is null
+    """,
+}
+
+user_table_quality_checks = {
+    "id uniqueness": """
+        select
+            user_id,
+            count(*)
+        from
+            users
+        group by 1
+        having count(*) > 1
+    """,
+    "id not null": """
+        select
+            user_id
+        from
+            users
+        where
+            user_id is null
+    """,
+}
+
+song_table_quality_checks = {
+    "id uniqueness": """
+        select
+            song_id,
+            count(*)
+        from
+            songs
+        group by 1
+        having count(*) > 1
+    """,
+    "id not null": """
+        select
+            song_id
+        from
+            songs
+        where
+            song_id is null
+    """,
+}
+
+artist_table_quality_checks = {
+    "id uniqueness": """
+        select
+            artist_id,
+            count(*)
+        from
+            artists
+        group by 1
+        having count(*) > 1
+    """,
+    "id not null": """
+        select
+            artist_id
+        from
+            artists
+        where
+            artist_id is null
+    """,
+}
+
+time_table_quality_checks = {
+    "id uniqueness": """
+        select
+            start_time,
+            count(*)
+        from
+            time
+        group by 1
+        having count(*) > 1
+    """,
+    "id not null": """
+        select
+            start_time
+        from
+            time
+        where
+            start_time is null
+    """,
+}
+
+
 # QUERY LISTS
 
 create_table_queries = [
@@ -313,10 +465,8 @@ create_table_queries = [
     songplay_table_create,
 ]
 drop_table_queries = [
-    # commented to avoid having to load them every time during development
-    # staging_events_table_drop,
-    # staging_songs_table_drop,
-
+    staging_events_table_drop,
+    staging_songs_table_drop,
     songplay_table_drop,
     user_table_drop,
     song_table_drop,
@@ -330,4 +480,11 @@ insert_table_queries = [
     artist_table_insert,
     time_table_insert,
     songplay_table_insert,
+]
+quality_check_definitions = [
+    songplay_table_quality_checks,
+    user_table_quality_checks,
+    song_table_quality_checks,
+    artist_table_quality_checks,
+    time_table_quality_checks,
 ]
